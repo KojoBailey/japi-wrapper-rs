@@ -51,9 +51,5 @@ pub fn init() -> Result<(), libloading::Error> {
     }
 
     let api = JoJoAPI::load()?;
-    API.set(api).map_err(|_| libloading::Error::DlOpen {
-        desc: "JoJoAPI has already been initialised.".to_string()
-    })?;
-
-    Ok(())
+    API.set(api).ok();
 }
