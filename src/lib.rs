@@ -30,9 +30,9 @@ macro_rules! register_mod {
                     $author,
                     $guid,
                     $version,
-                    $desc
+                    $desc,
             ));
-            storage.as_raw();
+            storage.as_raw()
         }
     };
 }
