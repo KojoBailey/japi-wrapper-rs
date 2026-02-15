@@ -21,7 +21,7 @@ macro_rules! register_mod {
         version: $version:expr,
         desc: $desc:expr,
     ) => {
-        static MOD_META_STORAGE: OnceLock<$crate::ModMetaStorage> = OnceLock::new();
+        static MOD_META_STORAGE: ::std::sync::OnceLock<$crate::ModMetaStorage> = ::std::sync::OnceLock::new();
 
         #[unsafe(no_mangle)]
         pub extern "C" fn GetModMeta() -> $crate::JAPIModMetaRaw {
