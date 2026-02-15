@@ -1,7 +1,5 @@
-use libloading::{Library, Symbol};
 use std::ffi::CString;
 use std::os::raw::c_char;
-use std::sync::OnceLock;
 
 #[repr(C)]
 pub struct JAPIModMetaRaw {
@@ -84,45 +82,14 @@ pub enum LogLevel {
     Trace = 5,
 }
 
-static API: OnceLock<JoJoAPI> = OnceLock::new();
-
-#[derive(Debug)]
-pub struct JoJoAPI {
-    lib: Library,
+#[link(name = "JAPI")]
+unsafe extern "C" {
+    fn JAPI_LogMessage(level: i32, msg: *const c_char);
 }
 
-impl JoJoAPI {
-    fn load() -> Result<Self, libloading::Error> {
-        const DLL_PATH: &str = "japi/dlls/JAPI.dll";
-
-        unsafe {
-            let lib = Library::new(DLL_PATH)?;
-            Ok(JoJoAPI { lib })    
-        }
+pub fn log(level: LogLevel, msg: &str) {
+    let c_str = CString::new(msg).unwrap();
+    unsafe {
+        JAPI_LogMessage(level as i32, c_str.as_ptr());
     }
-
-    pub fn log(&self, level: LogLevel, msg: &str) -> Result<(), Box<dyn std::error::Error>> {
-        let c_str = CString::new(msg)?;
-        unsafe {
-            let func: Symbol<extern "C" fn(i32, *const c_char)> =
-                self.lib.get(b"JAPI_LogMessage")?;
-            func(level as i32, c_str.as_ptr());
-        }
-        Ok(())
-    }
-}
-
-pub fn get() -> &'static JoJoAPI {
-    API.get().expect("JoJoAPI has not been initialised; `ModInit` was not called.")
-}
-
-pub fn init() -> Result<(), libloading::Error> {
-    if API.get().is_some() {
-        return Ok(());
-    }
-
-    let api = JoJoAPI::load()?;
-    API.set(api).unwrap();
-
-    Ok(())
 }
