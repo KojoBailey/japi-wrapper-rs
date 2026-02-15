@@ -16,6 +16,7 @@ pub enum LogLevel {
 
 static API: OnceLock<JoJoAPI> = OnceLock::new();
 
+#[derive(Debug)]
 pub struct JoJoAPI {
     lib: Library,
 }
@@ -51,5 +52,7 @@ pub fn init() -> Result<(), libloading::Error> {
     }
 
     let api = JoJoAPI::load()?;
-    API.set(api).ok();
+    API.set(api).unwrap();
+
+    Ok(())
 }
