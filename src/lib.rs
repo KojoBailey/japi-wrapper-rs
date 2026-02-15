@@ -21,9 +21,11 @@ pub struct JoJoAPI {
 }
 
 impl JoJoAPI {
-    fn load(dll_path: &str) -> Result<Self, libloading::Error> {
+    fn load() -> Result<Self, libloading::Error> {
+        const DLL_PATH: &str = "japi/dlls/JAPI.dll";
+
         unsafe {
-            let lib = Library::new(dll_path)?;
+            let lib = Library::new(DLL_PATH)?;
             Ok(JoJoAPI { lib })    
         }
     }
@@ -43,15 +45,15 @@ pub fn get() -> &'static JoJoAPI {
     API.get().expect("JoJoAPI has not been initialised; `ModInit` was not called.")
 }
 
-#[unsafe(no_mangle)]
-pub extern "C" fn ModInit() {
+pub fn init() -> Result<(), libloading::Error> {
     if API.get().is_some() {
-        return;
+        return Ok(());
     }
 
-    let dll_path = "japi/dlls/JAPI.dll";
-    let api = JoJoAPI::load(dll_path)
-        .unwrap_or_else(|err| panic!("Failed to load JoJoAPI from {}: {}", dll_path, err));
+    let api = JoJoAPI::load()?;
+    API.set(api).map_err(|_| libloading::Error::DlOpen {
+        desc: "JoJoAPI has already been initialised.".to_string()
+    })?;
 
-    API.set(api).ok();
+    Ok(())
 }
