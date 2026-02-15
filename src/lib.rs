@@ -19,7 +19,7 @@ macro_rules! register_mod {
         author: $author:expr,
         guid: $guid:expr,
         version: $version:expr,
-        desc: $desc:expr,
+        desc: $desc:expr
     ) => {
         static MOD_META_STORAGE: ::std::sync::OnceLock<$crate::ModMetaStorage> = ::std::sync::OnceLock::new();
 
@@ -30,7 +30,7 @@ macro_rules! register_mod {
                     $author,
                     $guid,
                     $version,
-                    $desc,
+                    $desc
             ));
             storage.as_raw();
         }
