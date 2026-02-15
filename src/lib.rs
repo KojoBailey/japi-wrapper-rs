@@ -28,7 +28,7 @@ impl JoJoAPI {
         }
     }
 
-    pub fn log(&self, level: LogLevel, msg: &str) -> Result<(), Box<dyn std::error:Error>> {
+    pub fn log(&self, level: LogLevel, msg: &str) -> Result<(), Box<dyn std::error::Error>> {
         let c_str = CString::new(msg)?;
         unsafe {
             let func: Symbol<extern "C" fn(i32, *const c_char)> =
@@ -43,7 +43,7 @@ pub fn get() -> &'static JoJoAPI {
     API.get().expect("JoJoAPI has not been initialised; `ModInit` was not called.")
 }
 
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub extern "C" fn ModInit() {
     if API.get().is_some() {
         return;
