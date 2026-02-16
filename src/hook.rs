@@ -7,14 +7,13 @@ unsafe extern "C" {
     fn JAPI_RegisterHook(hook_meta: JAPIHookMetaRaw) -> u64;
 }
 
-#[repr(C, align(8))]
+#[repr(C)]
 struct JAPIHookMetaRaw {
     target: u64,
     detour: *const c_void,
     original: *mut *const c_void,
     name: *const c_char,
     is_game_function: bool,
-    _padding: [u8; 7],
 }
 
 pub fn register_hook<F>(
@@ -29,11 +28,10 @@ pub fn register_hook<F>(
     let handle = unsafe {
         JAPI_RegisterHook(JAPIHookMetaRaw{
             target,
-            detour: std::mem::transmute_copy::<F, *const c_void>(&detour),
+            detour: &detour as *const F as *const c_void,
             original: original.as_ptr() as *mut *const c_void,
             name: c_name,
             is_game_function,
-            _padding: [0; 7],
         })
     };
 
