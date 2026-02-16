@@ -13,7 +13,7 @@ struct JAPIHookMetaRaw {
     detour: *const c_void,
     original: *mut *const c_void,
     name: *const c_char,
-    is_game_function: bool,
+    is_game_function: u32,
 }
 
 pub fn register_hook<F>(
@@ -31,7 +31,7 @@ pub fn register_hook<F>(
             detour: std::mem::transmute_copy(&detour),
             original: original.as_ptr() as *mut *const c_void,
             name: c_name,
-            is_game_function,
+            is_game_function: is_game_function as u32,
         })
     };
 
