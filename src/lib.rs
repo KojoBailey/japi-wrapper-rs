@@ -93,3 +93,45 @@ pub fn log(level: LogLevel, msg: &str) {
         JAPI_LogMessage(level as i32, c_str.as_ptr());
     }
 }
+
+#[macro_export]
+macro_rules! log_fatal {
+    ($($arg:tt)*) => {
+        $crate::log($crate::LogLevel::Fatal, &format!($($arg)*))
+    };
+}
+
+#[macro_export]
+macro_rules! log_error {
+    ($($arg:tt)*) => {
+        $crate::log($crate::LogLevel::Error, &format!($($arg)*))
+    };
+}
+
+#[macro_export]
+macro_rules! log_warn {
+    ($($arg:tt)*) => {
+        $crate::log($crate::LogLevel::Warn, &format!($($arg)*))
+    };
+}
+
+#[macro_export]
+macro_rules! log_info {
+    ($($arg:tt)*) => {
+        $crate::log($crate::LogLevel::Info, &format!($($arg)*))
+    };
+}
+
+#[macro_export]
+macro_rules! log_debug {
+    ($($arg:tt)*) => {
+        $crate::log($crate::LogLevel::Debug, &format!($($arg)*))
+    };
+}
+
+#[macro_export]
+macro_rules! log_trace {
+    ($($arg:tt)*) => {
+        $crate::log($crate::LogLevel::Trace, &format!($($arg)*))
+    };
+}
