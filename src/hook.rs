@@ -28,7 +28,7 @@ pub fn register_hook<F>(
     let handle = unsafe {
         JAPI_RegisterHook(JAPIHookMetaRaw{
             target,
-            detour: std::mem::transmute_copy(&detour),
+            detour: std::mem::transmute_copy::<F, *const c_void>(&detour),
             original: original.as_ptr() as *mut *const c_void,
             name: c_name,
             is_game_function: is_game_function as u32,
