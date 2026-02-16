@@ -23,18 +23,20 @@ pub fn register_hook<F>(
     name: &str,
     is_game_function: bool,
 ) -> Option<u64> {
-    let c_name = CString::new(name).unwrap();
+    let c_name = CString::new(name).unwrap().into_raw();
 
-    let handle = 
-        unsafe { JAPI_RegisterHook(JAPIHookMetaRaw{
+    let handle = unsafe {
+        JAPI_RegisterHook(JAPIHookMetaRaw{
             target,
             detour: std::mem::transmute_copy(&detour),
             original: original.as_ptr() as *mut *const c_void,
-            name: c_name.as_ptr(),
+            name: c_name,
             is_game_function,
-        })};
+        })
+    };
 
     if handle == 0 {
+        unsafe { let _ = CString::from_raw(c_name); } // Prevent memory leak on failure.
         return None;
     }
     Some(handle)
