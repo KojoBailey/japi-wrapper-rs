@@ -15,7 +15,28 @@ struct JAPIHookMetaRaw {
     is_game_function: bool,
 }
 
-pub fn register_hook(
+#[macro_export]
+macro_rules! register_hook {
+    (
+        $addr:expr,
+        $hook:expr,
+        $original:expr,
+        $name:expr,
+        $is_game_function:expr
+    ) => {{
+        unsafe {
+            $crate::register_hook_impl(
+                $addr,
+                $hook as *const std::os::raw::c_void,
+                &raw mut $original as *mut *const std::os::raw::c_void,
+                $name,
+                $is_game_function
+            )
+        }
+    }};
+}
+
+pub fn register_hook_impl(
     target: u64,
     detour: *const c_void,
     original: *mut *const c_void,
