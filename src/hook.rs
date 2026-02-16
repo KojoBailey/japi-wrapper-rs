@@ -16,9 +16,9 @@ struct JAPIHookMetaRaw {
     is_game_function: bool,
 }
 
-pub fn register_hook<F>(
+pub fn register_hook(
     target: u64,
-    detour: F,
+    detour: *const c_void,
     original: &AtomicPtr<c_void>,
     name: &str,
     is_game_function: bool,
@@ -28,7 +28,7 @@ pub fn register_hook<F>(
     let handle = unsafe {
         JAPI_RegisterHook(JAPIHookMetaRaw{
             target,
-            detour: &detour as *const F as *const c_void,
+            detour,
             original: original.as_ptr() as *mut *const c_void,
             name: c_name,
             is_game_function,
