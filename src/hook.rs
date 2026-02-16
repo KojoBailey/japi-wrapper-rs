@@ -1,6 +1,5 @@
 use std::os::raw::{c_char, c_void};
 use std::ffi::CString;
-use std::sync::atomic::AtomicPtr; 
 
 #[link(name = "JAPI")]
 unsafe extern "C" {
@@ -19,7 +18,7 @@ struct JAPIHookMetaRaw {
 pub fn register_hook(
     target: u64,
     detour: *const c_void,
-    original: &AtomicPtr<c_void>,
+    original: *mut *const c_void,
     name: &str,
     is_game_function: bool,
 ) -> Option<u64> {
@@ -29,7 +28,7 @@ pub fn register_hook(
         JAPI_RegisterHook(JAPIHookMetaRaw{
             target,
             detour,
-            original: original.as_ptr() as *mut *const c_void,
+            original,
             name: c_name,
             is_game_function,
         })
