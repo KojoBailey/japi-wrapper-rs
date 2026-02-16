@@ -7,7 +7,7 @@ unsafe extern "C" {
     fn JAPI_RegisterHook(hook_meta: JAPIHookMetaRaw) -> u64;
 }
 
-#[repr(C)]
+#[repr(C, align(8))]
 struct JAPIHookMetaRaw {
     target: u64,
     detour: *const c_void,
