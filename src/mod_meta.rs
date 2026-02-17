@@ -58,7 +58,7 @@ macro_rules! register_mod {
         static MOD_META_STORAGE: ::std::sync::OnceLock<$crate::ModMetaStorage> = ::std::sync::OnceLock::new();
 
         #[unsafe(no_mangle)]
-        pub extern "C" fn GetModMeta() -> $crate::JAPIModMetaRaw {
+        pub extern "stdcall" fn GetModMeta() -> $crate::JAPIModMetaRaw {
             let storage = MOD_META_STORAGE.get_or_init(|| $crate::ModMetaStorage::new(
                     $title,
                     $author,
