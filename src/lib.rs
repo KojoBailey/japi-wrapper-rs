@@ -15,6 +15,6 @@ pub fn get_module_base_address() -> *const u8 {
     unsafe { JAPI_GetModuleBaseAddress() as *const u8 }
 }
 
-pub fn convert_relative_module_address(relative_address: usize) -> *const u8 {
+pub fn offset_to_module_address(relative_address: usize) -> *const u8 {
     unsafe { get_module_base_address().add(relative_address) }
 }
